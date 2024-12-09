@@ -734,17 +734,17 @@ Epoch 245, loss 8.880005764642183, train accuracy: 87.11%
 Validation accuracy: 74.00%
 Best Valid accuracy: 79.00%
 Epoch 246, loss 8.486099383956194, train accuracy: 87.33%
-Validation accuracy: 67.00%
+Validation accuracy: 72.00%
 Best Valid accuracy: 79.00%
 Epoch 247, loss 6.978222498349336, train accuracy: 88.89%
 Validation accuracy: 72.00%
 Best Valid accuracy: 79.00%
 Epoch 248, loss 8.115957787552725, train accuracy: 88.22%
-Validation accuracy: 66.00%
+Validation accuracy: 70.00%
 Best Valid accuracy: 79.00%
 Epoch 249, loss 6.952054562519308, train accuracy: 88.22%
 Validation accuracy: 75.00%
 Best Valid accuracy: 79.00%
 Epoch 250, loss 8.127010705299888, train accuracy: 86.44%
-Validation accuracy: 63.00%
+Validation accuracy: 71.00%
 Best Valid accuracy: 79.00%
