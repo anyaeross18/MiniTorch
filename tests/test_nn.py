@@ -33,14 +33,11 @@ def test_avg(t: Tensor) -> None:
 @given(tensors(shape=(2, 3, 4)))
 def test_max(t: Tensor) -> None:
     out = minitorch.max(t, 1)
-    # assert out.shape == t.shape, f"out = {out}, t = {t}"
     for i in range(2):
         for j in range(4):
             assert_close(out[i, 0, j], max([t[i, k, j] for k in range(3)]))
 
     out = minitorch.argmax(t, 1)
-    # assert out.sum(dim=1).all().item() == 1, f"out = {out}, t = {t}, sum_dim = {t.sum()}"
-    # assert out.shape == t.shape, f"out = {out}, t = {t}, sum_dim = {out.sum(dim=1).all().item()}"
     for i in range(2):
         for j in range(4):
             max_val = max([t[i, k, j] for k in range(3)])
