@@ -38,6 +38,17 @@ class ScalarFunction:
 
     @classmethod
     def apply(cls, *vals: ScalarLike) -> Scalar:
+        """Apply the scalar function to the given values.
+
+        Args:
+        ----
+            vals (ScalarLike): The input values to the function.
+
+        Returns:
+        -------
+            Scalar: The result of applying the function.
+
+        """
         raw_vals = []
         scalars = []
         for v in vals:
@@ -60,16 +71,126 @@ class ScalarFunction:
         return minitorch.scalar.Scalar(c, back)
 
 
+class Mul(ScalarFunction):
+    @staticmethod
+    def forward(ctx: Context, x: float, y: float) -> float:
+        """Returns the product of x and y"""
+        ctx.save_for_backward(x, y)
+        return operators.mul(x, y)
+
+    @staticmethod
+    def backward(ctx: Context, d_output: float) -> Tuple[float, float]:
+        """Returns the derivatives of the product of x and y"""
+        x, y = ctx.saved_values
+        return d_output * y, d_output * x
+
+
+class Inv(ScalarFunction):
+    @staticmethod
+    def forward(ctx: Context, x: float) -> float:
+        """Returns the inverse of x"""
+        ctx.save_for_backward(x)
+        return operators.inv(x)
+
+    @staticmethod
+    def backward(ctx: Context, d_output: float) -> float:
+        """Returns the derivative of the inverse of x"""
+        (a,) = ctx.saved_values
+        return -d_output / (a * a)
+
+
+class Neg(ScalarFunction):
+    @staticmethod
+    def forward(ctx: Context, x: float) -> float:
+        """Returns the negation of x"""
+        return operators.neg(x)
+
+    @staticmethod
+    def backward(ctx: Context, d_output: float) -> float:
+        """Returns the derivative of the negation of x"""
+        return -d_output
+
+
+class Sigmoid(ScalarFunction):
+    @staticmethod
+    def forward(ctx: Context, x: float) -> float:
+        """Returns the sigmoid of x"""
+        result = operators.sigmoid(x)
+        ctx.save_for_backward(result)
+        return result
+
+    @staticmethod
+    def backward(ctx: Context, d_output: float) -> float:
+        """Returns the derivative of the sigmoid of x"""
+        (sigmoid_x,) = ctx.saved_values
+        return d_output * sigmoid_x * (1 - sigmoid_x)
+
+
+class ReLU(ScalarFunction):
+    @staticmethod
+    def forward(ctx: Context, x: float) -> float:
+        """Returns the ReLU of x"""
+        ctx.save_for_backward(x)
+        return operators.relu(x)
+
+    @staticmethod
+    def backward(ctx: Context, d_output: float) -> float:
+        """Returns the derivative of the ReLU of x"""
+        (a,) = ctx.saved_values
+        return d_output * (1.0 if a > 0 else 0.0)
+
+
+class Exp(ScalarFunction):
+    @staticmethod
+    def forward(ctx: Context, x: float) -> float:
+        """Returns the exponential of x"""
+        out = operators.exp(x)
+        ctx.save_for_backward(out)
+        return out
+
+    @staticmethod
+    def backward(ctx: Context, d_output: float) -> float:
+        """Returns the derivative of the exponential of x"""
+        (a,) = ctx.saved_values
+        return a * d_output
+
+
+class LT(ScalarFunction):
+    @staticmethod
+    def forward(ctx: Context, x: float, y: float) -> float:
+        """Returns true if x is less than y"""
+        return operators.lt(x, y)
+
+    @staticmethod
+    def backward(ctx: Context, d_output: float) -> Tuple[float, float]:
+        """Returns the derivatives of the less than function"""
+        return 0.0, 0.0
+
+
+class EQ(ScalarFunction):
+    @staticmethod
+    def forward(ctx: Context, x: float, y: float) -> float:
+        """Returns true if x equals y"""
+        return operators.eq(x, y)
+
+    @staticmethod
+    def backward(ctx: Context, d_output: float) -> Tuple[float, float]:
+        """Returns the derivatives of the equality function"""
+        return 0.0, 0.0
+
+
 # Examples
 class Add(ScalarFunction):
     """Addition function $f(x, y) = x + y$"""
 
     @staticmethod
     def forward(ctx: Context, a: float, b: float) -> float:
+        """Add two numbers"""
         return a + b
 
     @staticmethod
     def backward(ctx: Context, d_output: float) -> Tuple[float, ...]:
+        """Derivatives of addition"""
         return d_output, d_output
 
 
@@ -78,15 +199,15 @@ class Log(ScalarFunction):
 
     @staticmethod
     def forward(ctx: Context, a: float) -> float:
+        """Log of a"""
         ctx.save_for_backward(a)
         return operators.log(a)
 
     @staticmethod
     def backward(ctx: Context, d_output: float) -> float:
+        """Derivative of log"""
         (a,) = ctx.saved_values
         return operators.log_back(a, d_output)
 
 
 # To implement.
-
-
