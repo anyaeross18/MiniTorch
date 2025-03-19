@@ -20,8 +20,8 @@ mnist_get_data.sh
 
 * To Run the Training for the Sentiment and Mnist Training:
 ```
-project/run_sentiment.py
-project/run_mnist_multiclass.py
+python project/run_sentiment.py
+python project/run_mnist_multiclass.py
 ```
 
 * Tests:
